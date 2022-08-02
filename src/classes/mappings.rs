@@ -1,7 +1,7 @@
-use phf::{phf_map};
+use phf::phf_map;
 pub struct Mappings {
-    pub dummy: bool
-} 
+    pub dummy: bool,
+}
 
 impl Mappings {
     pub const DOMAIN_MAPPINGS: phf::Map<&'static str, &'static str> = phf_map! {
