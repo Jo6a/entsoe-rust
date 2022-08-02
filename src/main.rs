@@ -1,6 +1,6 @@
 use crate::classes::EntsoeClient;
 use crate::classes::DatetimeValue;
-use chrono::{DateTime, NaiveDateTime, Utc, FixedOffset};
+use chrono::{NaiveDateTime};
 use std::error::Error;
 mod classes;
 

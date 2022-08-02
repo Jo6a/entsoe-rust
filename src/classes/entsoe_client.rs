@@ -1,7 +1,8 @@
 use std::vec;
 use std::{collections::HashMap};
 use std::error::Error;
-use chrono::{DateTime, NaiveDateTime, Utc, FixedOffset};
+use chrono::{NaiveDateTime};
+use crate::classes::Mappings;
 
 #[derive(Debug)]
 pub struct EntsoeClient {
@@ -24,9 +25,15 @@ impl EntsoeClient {
 
     pub fn query_day_ahead_prices(&self, start_time: &str, end_time: &str, area: &str) -> Result<String, Box<dyn Error>> {
         let mut params = HashMap::new();
-        // TODO use area for mappings
-        params.insert("in_Domain", "10Y1001A1001A82H");
-        params.insert("out_Domain", "10Y1001A1001A82H");
+
+        match Mappings::DOMAIN_MAPPINGS.get(&"DE_LU") {
+            Some(&domain_value) => { 
+                params.insert("in_Domain", domain_value);
+                params.insert("out_Domain", domain_value); 
+            },
+            _ => println!("Don't have mapping for area."),
+        }
+
         return self.basic_request(start_time, end_time, params);
     }
 
