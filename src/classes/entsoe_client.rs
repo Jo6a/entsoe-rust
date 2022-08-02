@@ -21,8 +21,9 @@ impl<'a> EntsoeClient<'a> {
         params: HashMap<&str, &str>,
     ) -> Result<String, Box<dyn Error>> {
         // TODO build request with the parameters, not hard-coded
-        let req : String = format!("https://transparency.entsoe.eu/api?documentType=A44&in_Domain={}&out_Domain={}&securityToken={}&periodStart={}&periodEnd={}",
-         params.get("in_Domain").unwrap(), params.get("out_Domain").unwrap(), self.api_key, start_time, end_time);
+        let req : String = format!("https://transparency.entsoe.eu/api?documentType={}&in_Domain={}&out_Domain={}&securityToken={}&periodStart={}&periodEnd={}",
+        params.get("documentType").unwrap(),params.get("in_Domain").unwrap(),
+        params.get("out_Domain").unwrap(), self.api_key, start_time, end_time);
         let resp: String = reqwest::blocking::get(req)?.text()?;
         println!("{:#?}", resp);
         Ok(resp)
@@ -35,8 +36,8 @@ impl<'a> EntsoeClient<'a> {
         area: &str,
     ) -> Result<String, Box<dyn Error>> {
         let mut params: HashMap<&str, &str> = HashMap::new();
-
-        match Mappings::DOMAIN_MAPPINGS.get(&"DE_LU") {
+        params.insert("documentType", "A44");
+        match Mappings::DOMAIN_MAPPINGS.get(area) {
             Some(&domain_value) => {
                 params.insert("in_Domain", domain_value);
                 params.insert("out_Domain", domain_value);
