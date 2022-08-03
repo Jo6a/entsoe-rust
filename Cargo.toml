@@ -9,3 +9,4 @@ edition = "2021"
 reqwest = { version = "0.11", features = ["blocking"] }
 chrono = "0.4"
 phf = { version = "0.11", features = ["macros"] }
+quick-xml = "0.23.0"
