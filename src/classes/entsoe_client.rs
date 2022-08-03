@@ -6,7 +6,6 @@ use quick_xml::Reader;
 use std::collections::HashMap;
 use std::error::Error;
 
-#[derive(Debug)]
 pub struct EntsoeClient<'a> {
     pub api_key: &'a str,
 }
@@ -23,18 +22,22 @@ impl<'a> EntsoeClient<'a> {
         let mut reader = Reader::from_str(&xml_string[..]);
         reader.trim_text(true);
 
-        let mut flag = false;
+        let mut val_flag = false;
+        let mut dt_flag = false;
         let mut buf = Vec::new();
-        const START_TIME: &str = "202207011600"; // TODO parse start_time from xml
-        let actual_dt = NaiveDateTime::parse_from_str(START_TIME, "%Y%m%d%H%M").unwrap();
+        let mut actual_dt = NaiveDateTime::parse_from_str("197001010000", "%Y%m%d%H%M").unwrap(); // = NaiveDateTime::parse_from_str(START_TIME, "%Y%m%d%H%M").unwrap();
         let mut count = 0;
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => {
-                    if let b"price.amount" = e.name() { flag = true }
+                    if let b"price.amount" = e.name() {
+                        val_flag = true
+                    } else if let b"start" = e.name() {
+                        dt_flag = true
+                    }
                 }
                 Ok(Event::Text(e)) => {
-                    if flag {
+                    if val_flag {
                         response_vector.push(DatetimeValue {
                             dt: actual_dt + Duration::hours(count),
                             val: e
@@ -44,8 +47,14 @@ impl<'a> EntsoeClient<'a> {
                                 .unwrap(),
                         });
                         count += 1;
-
-                        flag = false;
+                        val_flag = false;
+                    } else if dt_flag {
+                        actual_dt = NaiveDateTime::parse_from_str(
+                            &e.unescape_and_decode(&reader).unwrap()[..],
+                            "%Y-%m-%dT%H:%MZ",
+                        )
+                        .unwrap();
+                        dt_flag = false;
                     }
                 }
                 Ok(Event::Eof) => break,
@@ -63,7 +72,6 @@ impl<'a> EntsoeClient<'a> {
         end_time: &str,
         params: HashMap<&str, &str>,
     ) -> Result<Vec<DatetimeValue>, Box<dyn Error>> {
-        // TODO build request with the parameters, not hard-coded
         let req : String = format!("https://transparency.entsoe.eu/api?documentType={}&in_Domain={}&out_Domain={}&securityToken={}&periodStart={}&periodEnd={}",
                     params.get("documentType").unwrap(),params.get("in_Domain").unwrap(),
                     params.get("out_Domain").unwrap(), self.api_key, start_time, end_time);
