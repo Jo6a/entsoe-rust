@@ -25,7 +25,7 @@ impl<'a> EntsoeClient<'a> {
         let mut val_flag = false;
         let mut dt_flag = false;
         let mut buf = Vec::new();
-        let mut actual_dt = NaiveDateTime::parse_from_str("197001010000", "%Y%m%d%H%M").unwrap(); // = NaiveDateTime::parse_from_str(START_TIME, "%Y%m%d%H%M").unwrap();
+        let mut actual_dt = NaiveDateTime::parse_from_str("197001010000", "%Y%m%d%H%M").unwrap();
         let mut count = 0;
         loop {
             match reader.read_event(&mut buf) {
@@ -72,9 +72,14 @@ impl<'a> EntsoeClient<'a> {
         end_time: &str,
         params: HashMap<&str, &str>,
     ) -> Result<Vec<DatetimeValue>, Box<dyn Error>> {
-        let req : String = format!("https://transparency.entsoe.eu/api?documentType={}&in_Domain={}&out_Domain={}&securityToken={}&periodStart={}&periodEnd={}",
-                    params.get("documentType").unwrap(),params.get("in_Domain").unwrap(),
-                    params.get("out_Domain").unwrap(), self.api_key, start_time, end_time);
+        let mut uri_params: String = String::new();
+        uri_params.push_str(&format!("securityToken={}", self.api_key)[..]);
+        uri_params.push_str(&format!("&periodStart={}", start_time)[..]);
+        uri_params.push_str(&format!("&periodEnd={}", end_time)[..]);
+        for (key, value) in params.into_iter() {
+            uri_params.push_str(&format!("&{key}={value}")[..]);
+        }
+        let req: String = format!("https://transparency.entsoe.eu/api?{}", uri_params);
         let resp: String = reqwest::blocking::get(req)?.text()?;
         println!("{:#?}", resp);
         let res = self.parse_xml_string(resp);
@@ -93,6 +98,25 @@ impl<'a> EntsoeClient<'a> {
         match Mappings::DOMAIN_MAPPINGS.get(area) {
             Some(&domain_value) => {
                 params.insert("in_Domain", domain_value);
+                params.insert("out_Domain", domain_value);
+            }
+            _ => println!("Don't have mapping for area."),
+        }
+        self.basic_request(start_time, end_time, params)
+    }
+
+    pub fn query_load(
+        &self,
+        start_time: &str,
+        end_time: &str,
+        area: &str,
+    ) -> Result<Vec<DatetimeValue>, Box<dyn Error>> {
+        let mut params: HashMap<&str, &str> = HashMap::new();
+        params.insert("documentType", "A65");
+        params.insert("processType", "A16");
+        match Mappings::DOMAIN_MAPPINGS.get(area) {
+            Some(&domain_value) => {
+                params.insert("outBiddingZone_Domain", domain_value);
                 params.insert("out_Domain", domain_value);
             }
             _ => println!("Don't have mapping for area."),

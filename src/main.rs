@@ -10,6 +10,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     const ENTSOE_CLIENT: EntsoeClient = EntsoeClient { api_key: API_KEY };
 
     let _resp = ENTSOE_CLIENT.query_day_ahead_prices(START_TIME, END_TIME, AREA);
+    let _resp = ENTSOE_CLIENT.query_load(START_TIME, END_TIME, AREA);
 
     Ok(())
 }

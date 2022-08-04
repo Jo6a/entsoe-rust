@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'ENTSOE_Client'",
+            "name": "Debug executable 'entsoe-rust'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=ENTSOE_Client",
-                    "--package=ENTSOE_Client"
+                    "--bin=entsoe-rust",
+                    "--package=entsoe-rust"
                 ],
                 "filter": {
-                    "name": "ENTSOE_Client",
+                    "name": "entsoe-rust",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'ENTSOE_Client'",
+            "name": "Debug unit tests in executable 'entsoe-rust'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=ENTSOE_Client",
-                    "--package=ENTSOE_Client"
+                    "--bin=entsoe-rust",
+                    "--package=entsoe-rust"
                 ],
                 "filter": {
-                    "name": "ENTSOE_Client",
+                    "name": "entsoe-rust",
                     "kind": "bin"
                 }
             },
