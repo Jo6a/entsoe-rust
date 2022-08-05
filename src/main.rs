@@ -1,8 +1,7 @@
 use crate::classes::EntsoeClient;
-use std::error::Error;
 mod classes;
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     const API_KEY: &str = "<API_KEY>";
     const START_TIME: &str = "202207011600";
     const END_TIME: &str = "202207012300";
@@ -10,7 +9,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     const ENTSOE_CLIENT: EntsoeClient = EntsoeClient { api_key: API_KEY };
 
     let _resp = ENTSOE_CLIENT.query_day_ahead_prices(START_TIME, END_TIME, AREA);
+    let _resp = ENTSOE_CLIENT.query_net_position(START_TIME, END_TIME, AREA);
     let _resp = ENTSOE_CLIENT.query_load(START_TIME, END_TIME, AREA);
-
-    Ok(())
 }
