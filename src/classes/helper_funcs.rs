@@ -2,6 +2,7 @@ use chrono::Duration;
 use chrono::NaiveDateTime;
 use quick_xml::events::Event;
 use quick_xml::Reader;
+use std::fs;
 
 pub struct DatetimeValue {
     pub dt: NaiveDateTime,
@@ -60,5 +61,20 @@ impl HelpFuncs {
             buf.clear();
         }
         response_vector
+    }
+
+    pub fn write_results_csv(filename: &str, separator: &str, result_vec: Vec<DatetimeValue>) {
+        let mut content = String::new();
+        content.push_str(&format!("datetime{separator} value\n")[..]);
+        for v in result_vec {
+            content.push_str(
+                &format!(
+                    "{}{separator} {}\n",
+                    v.dt.format("%Y-%m-%d %H:%M:%S"),
+                    v.val
+                )[..],
+            );
+        }
+        fs::write(filename, content).expect("Something went wrong writing the file");
     }
 }
