@@ -7,6 +7,8 @@ edition = "2021"
 
 [dependencies]
 reqwest = { version = "0.11", features = ["blocking"] }
-chrono = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
 phf = { version = "0.11", features = ["macros"] }
 quick-xml = "0.23.0"
+serde = { version = "1.0.143", features = ["derive"] }
+serde_json = "1.0"

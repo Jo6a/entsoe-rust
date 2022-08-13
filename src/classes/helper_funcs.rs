@@ -2,8 +2,10 @@ use chrono::Duration;
 use chrono::NaiveDateTime;
 use quick_xml::events::Event;
 use quick_xml::Reader;
+use serde::{Serialize};
 use std::fs;
 
+#[derive(Serialize, Debug)]
 pub struct DatetimeValue {
     pub dt: NaiveDateTime,
     pub val: f64,
@@ -75,6 +77,11 @@ impl HelpFuncs {
                 )[..],
             );
         }
+        fs::write(filename, content).expect("Something went wrong writing the file");
+    }
+
+    pub fn write_results_json(filename: &str, result_vec: Vec<DatetimeValue>) {
+        let content = serde_json::to_string(&result_vec).unwrap();
         fs::write(filename, content).expect("Something went wrong writing the file");
     }
 }

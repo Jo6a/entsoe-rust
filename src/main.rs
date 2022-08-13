@@ -28,7 +28,7 @@ fn main() {
     const ENTSOE_CLIENT: EntsoeClient = EntsoeClient { api_key: API_KEY };
 
     let choice_query = QueryChoice::QueryDayAheadPrices;
-    let choice_data = DataChoice::WriteToCsvFile;
+    let choice_data = DataChoice::WriteToJsonFile;
 
     let resp: Result<Vec<DatetimeValue>, Box<dyn Error>>;
 
@@ -61,10 +61,10 @@ fn main() {
             HelpFuncs::write_results_csv("results.csv", ";", resp.unwrap())
         }
         DataChoice::WriteToJsonFile => {
-            println!("Not implemented yet!")
+            HelpFuncs::write_results_json("results.json", resp.unwrap())
         }
         DataChoice::ShowAsGraph => {
-            println!("Not implemented yet!")
+            todo!()
         }
     };
 }
