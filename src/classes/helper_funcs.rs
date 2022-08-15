@@ -1,8 +1,9 @@
-use chrono::Duration;
-use chrono::NaiveDateTime;
+use chrono::offset::{Local, TimeZone};
+use chrono::{DateTime, Duration, NaiveDateTime};
+use plotters::prelude::*;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use serde::{Serialize};
+use serde::Serialize;
 use std::fs;
 
 #[derive(Serialize, Debug)]
@@ -83,5 +84,39 @@ impl HelpFuncs {
     pub fn write_results_json(filename: &str, result_vec: Vec<DatetimeValue>) {
         let content = serde_json::to_string(&result_vec).unwrap();
         fs::write(filename, content).expect("Something went wrong writing the file");
+    }
+
+    pub fn plot_data(data: Vec<DatetimeValue>) {
+        let root_area = BitMapBackend::new("results_chart.png", (600, 400)).into_drawing_area();
+        root_area.fill(&WHITE).unwrap();
+
+        let from: DateTime<Local> = Local.from_local_datetime(&data[0].dt).unwrap();
+        let until: DateTime<Local> = Local.from_local_datetime(&data.last().unwrap().dt).unwrap();
+
+        let diff = from.signed_duration_since(from);
+        let diff2 = until.signed_duration_since(from);
+
+        let mut data_chart: Vec<(Duration, f64)> = vec![];
+        for item in data {
+            data_chart.push((
+                Local
+                    .from_local_datetime(&item.dt)
+                    .unwrap()
+                    .signed_duration_since(from),
+                item.val,
+            ));
+        }
+
+        let mut ctx = ChartBuilder::on(&root_area)
+            .set_label_area_size(LabelAreaPosition::Left, 40)
+            .set_label_area_size(LabelAreaPosition::Bottom, 40)
+            .caption("ResultsChart", ("sans-serif", 40))
+            .build_cartesian_2d(diff..diff2, f64::from(0)..450_f64)
+            .unwrap();
+
+        ctx.configure_mesh().draw().unwrap();
+
+        ctx.draw_series(data_chart.iter().map(|x| Circle::new(*x, 5, &BLUE)))
+            .unwrap();
     }
 }
