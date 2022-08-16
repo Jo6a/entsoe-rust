@@ -37,9 +37,7 @@ fn main() {
         QueryChoice::QueryNetPosition => {
             ENTSOE_CLIENT.query_net_position(START_TIME, END_TIME, AREA)
         }
-        QueryChoice::QueryLoad => {
-            ENTSOE_CLIENT.query_load(START_TIME, END_TIME, AREA)
-        }
+        QueryChoice::QueryLoad => ENTSOE_CLIENT.query_load(START_TIME, END_TIME, AREA),
         QueryChoice::QueryLoadForecast => {
             ENTSOE_CLIENT.query_load_forecast(START_TIME, END_TIME, AREA, None)
         }
@@ -49,9 +47,7 @@ fn main() {
         QueryChoice::QueryWindAndSolarForecast => {
             ENTSOE_CLIENT.query_wind_and_solar_forecast(START_TIME, END_TIME, AREA, None)
         }
-        QueryChoice::QueryGeneration => {
-            ENTSOE_CLIENT.query_generation(START_TIME, END_TIME, AREA)
-        }
+        QueryChoice::QueryGeneration => ENTSOE_CLIENT.query_generation(START_TIME, END_TIME, AREA),
     };
 
     match choice_data {

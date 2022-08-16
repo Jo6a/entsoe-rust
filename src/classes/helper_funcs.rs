@@ -87,22 +87,19 @@ impl HelpFuncs {
     }
 
     pub fn plot_data(data: Vec<DatetimeValue>) {
-        let root_area = BitMapBackend::new("results_chart.png", (600, 400)).into_drawing_area();
+        let y_min = data.iter().min_by(|a, b| a.val.total_cmp(&b.val)).unwrap();
+        let y_max = data.iter().max_by(|a, b| a.val.total_cmp(&b.val)).unwrap();
+
+        let root_area = BitMapBackend::new("results_chart.png", (1024, 768)).into_drawing_area();
         root_area.fill(&WHITE).unwrap();
 
         let from: DateTime<Local> = Local.from_local_datetime(&data[0].dt).unwrap();
         let until: DateTime<Local> = Local.from_local_datetime(&data.last().unwrap().dt).unwrap();
 
-        let diff = from.signed_duration_since(from);
-        let diff2 = until.signed_duration_since(from);
-
-        let mut data_chart: Vec<(Duration, f64)> = vec![];
-        for item in data {
+        let mut data_chart: Vec<(DateTime<Local>, f64)> = vec![];
+        for item in &data {
             data_chart.push((
-                Local
-                    .from_local_datetime(&item.dt)
-                    .unwrap()
-                    .signed_duration_since(from),
+                Local.from_local_datetime(&item.dt).unwrap(),
                 item.val,
             ));
         }
@@ -111,12 +108,16 @@ impl HelpFuncs {
             .set_label_area_size(LabelAreaPosition::Left, 40)
             .set_label_area_size(LabelAreaPosition::Bottom, 40)
             .caption("ResultsChart", ("sans-serif", 40))
-            .build_cartesian_2d(diff..diff2, f64::from(0)..450_f64)
+            .build_cartesian_2d(from..until, (y_min.val * 0.8)..(y_max.val * 1.1))
             .unwrap();
 
-        ctx.configure_mesh().draw().unwrap();
+        ctx.configure_mesh()
+            .light_line_style(&WHITE)
+            .x_label_formatter(&|x| x.naive_local().to_string())
+            .draw()
+            .unwrap();
 
-        ctx.draw_series(data_chart.iter().map(|x| Circle::new(*x, 5, &BLUE)))
+        ctx.draw_series(data_chart.iter().map(|x| Circle::new(*x, 8, BLUE.filled())))
             .unwrap();
     }
 }
