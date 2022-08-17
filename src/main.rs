@@ -12,6 +12,9 @@ enum QueryChoice {
     QueryGenerationForecast,
     QueryWindAndSolarForecast,
     QueryGeneration,
+    QueryGenerationPerPlant,
+    QueryInstalledGenerationCapacity,
+    QueryInstalledGenerationCapacityPerUnit,
 }
 
 enum DataChoice {
@@ -48,6 +51,15 @@ fn main() {
             ENTSOE_CLIENT.query_wind_and_solar_forecast(START_TIME, END_TIME, AREA, None)
         }
         QueryChoice::QueryGeneration => ENTSOE_CLIENT.query_generation(START_TIME, END_TIME, AREA),
+        QueryChoice::QueryGenerationPerPlant => {
+            ENTSOE_CLIENT.query_generation_per_plant(START_TIME, END_TIME, AREA)
+        }
+        QueryChoice::QueryInstalledGenerationCapacity => {
+            ENTSOE_CLIENT.query_installed_generation_capacity(START_TIME, END_TIME, AREA)
+        }
+        QueryChoice::QueryInstalledGenerationCapacityPerUnit => {
+            ENTSOE_CLIENT.query_installed_generation_capacity_per_unit(START_TIME, END_TIME, AREA)
+        }
     };
 
     match choice_data {

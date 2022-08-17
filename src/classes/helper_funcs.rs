@@ -98,10 +98,7 @@ impl HelpFuncs {
 
         let mut data_chart: Vec<(DateTime<Local>, f64)> = vec![];
         for item in &data {
-            data_chart.push((
-                Local.from_local_datetime(&item.dt).unwrap(),
-                item.val,
-            ));
+            data_chart.push((Local.from_local_datetime(&item.dt).unwrap(), item.val));
         }
 
         let mut ctx = ChartBuilder::on(&root_area)
