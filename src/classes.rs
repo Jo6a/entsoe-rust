@@ -4,4 +4,5 @@ pub use self::helper_funcs::HelpFuncs;
 pub use self::mappings::Mappings;
 mod entsoe_client;
 mod helper_funcs;
+mod helper_funcs_tests;
 mod mappings;
