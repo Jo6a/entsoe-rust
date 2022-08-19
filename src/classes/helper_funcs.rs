@@ -86,18 +86,18 @@ impl HelpFuncs {
         fs::write(filename, content).expect("Something went wrong writing the file");
     }
 
-    pub fn plot_data(data: Vec<DatetimeValue>) {
-        let y_min = data.iter().min_by(|a, b| a.val.total_cmp(&b.val)).unwrap();
-        let y_max = data.iter().max_by(|a, b| a.val.total_cmp(&b.val)).unwrap();
+    pub fn plot_data(filename: &str, result_vec: Vec<DatetimeValue>) {
+        let y_min = result_vec.iter().min_by(|a, b| a.val.total_cmp(&b.val)).unwrap();
+        let y_max = result_vec.iter().max_by(|a, b| a.val.total_cmp(&b.val)).unwrap();
 
-        let root_area = BitMapBackend::new("results_chart.png", (1024, 768)).into_drawing_area();
+        let root_area = BitMapBackend::new(filename, (1024, 768)).into_drawing_area();
         root_area.fill(&WHITE).unwrap();
 
-        let from: DateTime<Local> = Local.from_local_datetime(&data[0].dt).unwrap();
-        let until: DateTime<Local> = Local.from_local_datetime(&data.last().unwrap().dt).unwrap();
+        let from: DateTime<Local> = Local.from_local_datetime(&result_vec[0].dt).unwrap();
+        let until: DateTime<Local> = Local.from_local_datetime(&result_vec.last().unwrap().dt).unwrap();
 
         let mut data_chart: Vec<(DateTime<Local>, f64)> = vec![];
-        for item in &data {
+        for item in &result_vec {
             data_chart.push((Local.from_local_datetime(&item.dt).unwrap(), item.val));
         }
 

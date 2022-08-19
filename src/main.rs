@@ -67,6 +67,6 @@ fn main() {
             HelpFuncs::write_results_csv("results.csv", ";", resp.unwrap());
         }
         DataChoice::WriteToJsonFile => HelpFuncs::write_results_json("results.json", resp.unwrap()),
-        DataChoice::ShowAsGraph => HelpFuncs::plot_data(resp.unwrap()),
+        DataChoice::ShowAsGraph => HelpFuncs::plot_data("results_chart.png", resp.unwrap()),
     };
 }
