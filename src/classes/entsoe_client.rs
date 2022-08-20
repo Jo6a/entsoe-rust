@@ -215,4 +215,22 @@ impl<'a> EntsoeClient<'a> {
         }
         self.basic_request(start_time, end_time, params)
     }
+
+    pub fn query_aggregate_water_reservoirs_and_hydro_storage(
+        &self,
+        start_time: &str,
+        end_time: &str,
+        area: &str,
+    ) -> Result<Vec<DatetimeValue>, Box<dyn Error>> {
+        let mut params: HashMap<&str, &str> = HashMap::new();
+        params.insert("documentType", "A72");
+        params.insert("processType", "A16");
+        match Mappings::DOMAIN_MAPPINGS.get(area) {
+            Some(&domain_value) => {
+                params.insert("in_Domain", domain_value);
+            }
+            _ => println!("Don't have mapping for area."),
+        }
+        self.basic_request(start_time, end_time, params)
+    }
 }

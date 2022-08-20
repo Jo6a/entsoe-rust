@@ -1,9 +1,8 @@
-
 #[cfg(test)]
 mod tests {
-    use chrono::{NaiveDateTime};
-    use std::path::Path;
+    use chrono::NaiveDateTime;
     use std::fs;
+    use std::path::Path;
 
     use super::super::helper_funcs::{DatetimeValue, HelpFuncs};
 

@@ -15,6 +15,7 @@ enum QueryChoice {
     QueryGenerationPerPlant,
     QueryInstalledGenerationCapacity,
     QueryInstalledGenerationCapacityPerUnit,
+    QueryAggregateWaterReservoirsAndHydroStorage,
 }
 
 enum DataChoice {
@@ -60,6 +61,8 @@ fn main() {
         QueryChoice::QueryInstalledGenerationCapacityPerUnit => {
             ENTSOE_CLIENT.query_installed_generation_capacity_per_unit(START_TIME, END_TIME, AREA)
         }
+        QueryChoice::QueryAggregateWaterReservoirsAndHydroStorage => ENTSOE_CLIENT
+            .query_aggregate_water_reservoirs_and_hydro_storage(START_TIME, END_TIME, AREA),
     };
 
     match choice_data {

@@ -87,14 +87,22 @@ impl HelpFuncs {
     }
 
     pub fn plot_data(filename: &str, result_vec: Vec<DatetimeValue>) {
-        let y_min = result_vec.iter().min_by(|a, b| a.val.total_cmp(&b.val)).unwrap();
-        let y_max = result_vec.iter().max_by(|a, b| a.val.total_cmp(&b.val)).unwrap();
+        let y_min = result_vec
+            .iter()
+            .min_by(|a, b| a.val.total_cmp(&b.val))
+            .unwrap();
+        let y_max = result_vec
+            .iter()
+            .max_by(|a, b| a.val.total_cmp(&b.val))
+            .unwrap();
 
         let root_area = BitMapBackend::new(filename, (1024, 768)).into_drawing_area();
         root_area.fill(&WHITE).unwrap();
 
         let from: DateTime<Local> = Local.from_local_datetime(&result_vec[0].dt).unwrap();
-        let until: DateTime<Local> = Local.from_local_datetime(&result_vec.last().unwrap().dt).unwrap();
+        let until: DateTime<Local> = Local
+            .from_local_datetime(&result_vec.last().unwrap().dt)
+            .unwrap();
 
         let mut data_chart: Vec<(DateTime<Local>, f64)> = vec![];
         for item in &result_vec {
